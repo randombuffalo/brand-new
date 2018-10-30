@@ -24,9 +24,11 @@ $usercheck=$false
 #search for user and assign License pack
 while ($usercheck -eq $false){    
     $userupn = read-Host "Enter the UPN of the user you would like to assign licenses"
+    $error.clear()
     try {
     Write-host "Assigning Standard License options to the user " + $userupn
-    Set-MsolUserLicense -UserPrincipalName $userupn -AddLicenses "amtci:STANDARDWOFFPACK" -LicenseOptions $Standardlicense -UsageLocation US -ErrorAction Stop
+    Set-MsolUser -UserPrincipalName $userupn -UsageLocation US
+    Set-MsolUserLicense -UserPrincipalName $userupn -AddLicenses "amtci:STANDARDWOFFPACK" -LicenseOptions $Standardlicense -ErrorAction Stop
     }
     catch {
     write-host "Error setting user license"
@@ -37,6 +39,8 @@ while ($usercheck -eq $false){
     $usercheck=$true
     }
 }
+
+function enableMailboxLogging(){
 #Wait for mailbox creation
 "Waiting for mailbox to be created..."
 Start-sleep -Seconds 15
@@ -60,3 +64,5 @@ Write-Host "Configuring mailbox auditing..."
 Set-Mailbox -Identity $userupn -AuditEnabled $true -AuditLogAgeLimit 180 -AuditAdmin Update, MoveToDeletedItems, SoftDelete, HardDelete, SendAs, SendOnBehalf, Create, UpdateFolderPermission -AuditDelegate Update, SoftDelete, HardDelete, SendAs, Create, UpdateFolderPermissions, MoveToDeletedItems, SendOnBehalf -AuditOwner UpdateFolderPermission, MailboxLogin, Create, SoftDelete, HardDelete, Update, MoveToDeletedItems
 Write-Host "Verifying Audit configuration..."
 get-mailbox -Identity $userupn | Select Name, AuditEnabled, AuditLogAgeLimit | FL
+}
+enableMailboxLogging
