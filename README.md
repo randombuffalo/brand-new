@@ -1,4 +1,4 @@
 # brand-new
-First GitHub project
-Hello all, this is a commit.
-Here is another commit.
+First GitHub project<br>
+Hello all, this is a commit.<br>
+Here is another commit.<br>
